@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-
-    <declare-styleable name="rotate_view">
-        <attr name="image" format="reference"/>
-        <attr name="angle" format="integer"/>
-    </declare-styleable>
-
-</resources>
