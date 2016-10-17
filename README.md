@@ -1,3 +1,4 @@
 # RotateView
 
-![output_vb65ig](https://cloud.githubusercontent.com/assets/4836122/19432220/49dce9d6-9479-11e6-873c-e2b01ab7e9d5.gif)
+![ezgif com-resize](https://cloud.githubusercontent.com/assets/4836122/19432615/03ade198-947b-11e6-9f2f-35818a10b30f.gif)
+
