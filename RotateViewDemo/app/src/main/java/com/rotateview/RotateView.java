@@ -26,6 +26,7 @@ public class RotateView extends RelativeLayout {
     private int mRotateViewImage;
     private int[] mViewCenterPoint;
     private OnRotationChangeListener mRotationChangeListener;
+    private RelativeLayout mRlParent;
 
     public void setOnRotationChangeListener(OnRotationChangeListener rotationChangeListener) {
         this.mRotationChangeListener = rotationChangeListener;
@@ -98,9 +99,10 @@ public class RotateView extends RelativeLayout {
      */
     private void initializeComponents() {
         mIvRotationImage = (ImageView) mView.findViewById(R.id.ivRotationImage);
+        mRlParent = (RelativeLayout) mView.findViewById(R.id.rlParent);
         mRlWrapper = (RelativeLayout) mView.findViewById(R.id.rlWrapper);
-        mIvRotationImage.getViewTreeObserver().addOnGlobalLayoutListener(onGlobalLayoutListener);
-        mRlWrapper.addOnLayoutChangeListener(onLayoutChangeListener);
+        mRlParent.getViewTreeObserver().addOnGlobalLayoutListener(onGlobalLayoutListener);
+        mRlWrapper.addOnLayoutChangeListener(onWrapperLayoutChangeListener);
         mRlWrapper.setOnTouchListener(viewTouchListener);
     }
 
@@ -113,7 +115,7 @@ public class RotateView extends RelativeLayout {
                 }
             };
 
-    private OnLayoutChangeListener onLayoutChangeListener = new OnLayoutChangeListener() {
+    private OnLayoutChangeListener onWrapperLayoutChangeListener = new OnLayoutChangeListener() {
         @Override
         public void onLayoutChange(View v, int left, int top, int right, int bottom,
                                    int oldLeft, int oldTop, int oldRight, int oldBottom) {
@@ -125,6 +127,7 @@ public class RotateView extends RelativeLayout {
     };
 
     private void initializeRotationView() {
+        adjustImageSize();
         /** Set wrapper layout size.*/
         setWrapperSize();
         /** Set image position in wrapper layout.*/
@@ -135,6 +138,20 @@ public class RotateView extends RelativeLayout {
         setViewPivotPositions();
         /** Rotate image by a given angle.*/
         rotateImageByAngle(mRotateViewAngle);
+    }
+
+    /**
+     * Function to set image size based on give parent layout size.
+     */
+    private void adjustImageSize() {
+        int parentHeight = mRlParent.getHeight();
+        int parentWidth = mRlParent.getWidth();
+        int smallerSide = parentHeight >= parentWidth ? parentWidth : parentHeight;
+        LayoutParams layoutParams = (LayoutParams) mIvRotationImage.getLayoutParams();
+        float ratio = ((float) smallerSide / 2) / (float) layoutParams.height;
+        layoutParams.height = smallerSide / 2;
+        layoutParams.width = (int) (layoutParams.width * ratio);
+        mIvRotationImage.setLayoutParams(layoutParams);
     }
 
     /**
@@ -192,6 +209,7 @@ public class RotateView extends RelativeLayout {
             int position[];
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
+                    mRlWrapper.removeOnLayoutChangeListener(onWrapperLayoutChangeListener);
                     position = new int[]{(int) event.getX(), (int) event.getY()};
                     rotateViewForPosition(position, mViewCenterPoint);
                     break;
